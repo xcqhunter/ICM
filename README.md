@@ -1,2 +1,2 @@
-# ICM
-信息采集管理
+# InfoCollectAndDistribution
+设备信息采集分发
