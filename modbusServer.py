@@ -18,6 +18,10 @@ import random
 
 import sysInfoManager
 
+import socket  
+import fcntl
+import struct
+
 class modbusServer():
 
 	log = Log.Log
@@ -27,20 +31,32 @@ class modbusServer():
 
 	def init(self):
 		self.sysTopInfo=sysInfoManager.sysInfoManager
-		self.modbusDevInfoList = self.sysTopInfo.getInfo("modbusServerInfoList")
+		self.modbusServerInfoList = self.sysTopInfo.getInfo("modbusServerInfoList")
+
+	def get_local_ip(self, ifname):
+
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
+		inet = fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))  
+		ret = socket.inet_ntoa(inet[20:24]) 
+ 
+		return ret  
 
 	def start_server(self):
 		try:
 			# server里的Ip和端口，注意开放相应的端口
-			SERVER = modbus_tk.modbus_tcp.TcpServer(address="", port=502)
+			self.log.Info(self.get_local_ip("eth0"))
+			SERVER = modbus_tk.modbus_tcp.TcpServer(address=self.get_local_ip("eth0"), port=502)
 			# 服务启动
 			SERVER.start()
 			# 建立第一个从机
 			SLAVE1 = SERVER.add_slave(1)
-			SLAVE1.add_block('modbusDevInfoList', cst.HOLDING_REGISTERS, 0, 2000)#地址0，长度4
-			SLAVE1.add_block('routeDevInfoList', cst.HOLDING_REGISTERS, 2000, 2000)#地址0，长度4
-			SLAVE1.add_block('opcserverInfoList', cst.HOLDING_REGISTERS, 4000, 2000)#地址0，长度4
-			SLAVE1.add_block('lzbusIpInfoList', cst.HOLDING_REGISTERS, 6000, 2000)#地址0，长度4
+
+			for i in range(len(self.modbusServerInfoList)):
+				info = self.modbusServerInfoList[i]
+				SLAVE1.add_block(info['regLable'], 
+						cst.HOLDING_REGISTERS, 
+						int(info['regStart']), 
+						int(info['size']))
 			
 		except Exception as e:
 			self.log.Info(e)
@@ -55,10 +71,10 @@ class modbusServer():
 		obi_list_size = len(obj_list)
 
 		master.execute(1, 
-				3, 
+				16, 
 				startaddr, 
 				1,
-				obi_list_size)
+				(obi_list_size,))
 
 		startaddr = startaddr + 1
 
@@ -68,13 +84,14 @@ class modbusServer():
 		while(len(list_tmp) >= 100):
 			self.log.Info(startaddr)
 			master.execute(1, 
-					3, 
+					16, 
 					startaddr, 
 					100,
 					list_tmp[0:100])
 			startaddr = startaddr + 100
 			list_tmp = list_tmp[100:len(list_tmp)]
-			
+
+		self.log.Info(startaddr)
 		master.execute(1, 
 				16, 
 				startaddr, 
@@ -87,29 +104,20 @@ class modbusServer():
 		while True:
 			try:
 				time.sleep(5)
-				master=modbus_tk.modbus_tcp.TcpMaster(host="127.0.0.1", port=502)
+				self.log.Info(self.get_local_ip("eth0"))
+				master=modbus_tk.modbus_tcp.TcpMaster(host=self.get_local_ip("eth0"), port=502)
 				master.set_timeout(5.0)
-
-				#将数据结构写入寄存器
-				obj = json.dumps(self.sysTopInfo.getInfo("modbusDevInfoList"))
-				obj_list = list(obj)
-				obj_list = self.list_convert_ord(obj_list)				
-				self.write_slave_info(master,0, obj_list)
-
-				obj = json.dumps(self.sysTopInfo.getInfo("snmpInfoList"))
-				obj_list = list(obj)
-				obj_list = self.list_convert_ord(obj_list)				
-				self.write_slave_info(master,2000, obj_list)
-
-				obj = json.dumps(self.sysTopInfo.getInfo("opcInfoList"))
-				obj_list = list(obj)
-				obj_list = self.list_convert_ord(obj_list)				
-				self.write_slave_info(master,4000, obj_list)
-
-				obj = json.dumps(self.sysTopInfo.getInfo("lzbusIpInfoList"))
-				obj_list = list(obj)
-				obj_list = self.list_convert_ord(obj_list)				
-				self.write_slave_info(master,6000, obj_list)
+				for i in range(len(self.modbusServerInfoList)):
+					info = self.modbusServerInfoList[i]
+					
+					#将数据结构写入寄存器
+					obj = json.dumps(self.sysTopInfo.getInfo(info['regLable']))
+					self.log.Info(info['regLable'])	
+				
+					obj_list = list(obj)
+					obj_list = self.list_convert_ord(obj_list)
+					self.write_slave_info(master,int(info['regStart']), obj_list)
+			
 
 			
 				self.log.Info("==== set_values...")

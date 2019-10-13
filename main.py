@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	#采集modbusDev信息
 	modbusInfo = collectModbusInfo.collectModbusInfo
 	modbusInfo.init()
-	modbusInfo.start()
+	#modbusInfo.start()
 
 	#采集snmp设备信息
 	snmpInfo = collectSnmpInfo.collectSnmpInfo
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	#启动modbusServer
 	msserver = modbusServer.modbusServer
 	msserver.init()
-	#msserver.start()
+	msserver.start()
 
 	#NBIOT模块初始化
 	nb = NBIOT.NBIOT

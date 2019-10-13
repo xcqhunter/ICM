@@ -1,26 +1,26 @@
 modbusServerInfoList = [
 {
 	"regStart":"0",  
-	"size":"0x400", 
-	"regContent":"snmpInfoList",
+	"size":"2000", 
+	"regLable":"snmpInfoList",
 	"Date":""
 },
 {
-	"regStart":"0x2000",  
-	"size":"0x400", 
-	"regContent":"modbusDevInfoList",
+	"regStart":"2000",  
+	"size":"2000", 
+	"regLable":"modbusDevInfoList",
 	"Date":""
 },
 {
-	"regStart":"0x3000",  
-	"size":"0x400", 
-	"regContent":"lzbusInfoList",
+	"regStart":"4000",  
+	"size":"2000", 
+	"regLable":"lzbusInfoList",
 	"Date":""
 },
 {
-	"regStart":"0x4000",  
-	"size":"0x400", 
-	"regContent":"opcInfoList",
+	"regStart":"6000",  
+	"size":"2000", 
+	"regLable":"opcInfoList",
 	"Date":""
 },
 
