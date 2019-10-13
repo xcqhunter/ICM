@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	#启动modbusServer
 	msserver = modbusServer.modbusServer
 	msserver.init()
-	msserver.start()
+	#msserver.start()
 
 	#NBIOT模块初始化
 	nb = NBIOT.NBIOT
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	#opc模块初始化
 	opcInfo = collectOpcInfo.collectOpcInfo
 	opcInfo.init()
-	#opcInfo.start()
+	opcInfo.start()
 
 	while True:
 		time.sleep(1)

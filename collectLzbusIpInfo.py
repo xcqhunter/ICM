@@ -10,6 +10,7 @@ import threading
 import subprocess
 import sysInfoManager
 import datetime
+import traceback
 
 class collectLzbusIpInfo():
 
@@ -26,7 +27,7 @@ class collectLzbusIpInfo():
 			self.serial = serial.Serial("/dev/ttyS5",9600,timeout=0.2)#Linux系统使用com1口连接串行口
 			self.serial.open() #打开端口
 		except Exception as e:
-                        self.log.Info("Exception:")
+                        self.log.Info(traceback.print_exc())
                         self.log.Info(e)
 		
 		self.READ_LZBUS_FLAG = 0
@@ -201,7 +202,7 @@ class collectLzbusIpInfo():
 			#定时采集设备网络状态信息 是否能ping通
 			self.update_ip_status()
 
-			time.sleep(20)
+			time.sleep(60)
 
 	def get_Ip_status(self, Ip):
 		cmd = "ping " + Ip + " -c 1 -W 1"

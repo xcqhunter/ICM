@@ -21,6 +21,7 @@ import sysInfoManager
 import socket  
 import fcntl
 import struct
+import traceback
 
 class modbusServer():
 
@@ -44,7 +45,6 @@ class modbusServer():
 	def start_server(self):
 		try:
 			# server里的Ip和端口，注意开放相应的端口
-			self.log.Info(self.get_local_ip("eth0"))
 			SERVER = modbus_tk.modbus_tcp.TcpServer(address=self.get_local_ip("eth0"), port=502)
 			# 服务启动
 			SERVER.start()
@@ -59,6 +59,7 @@ class modbusServer():
 						int(info['size']))
 			
 		except Exception as e:
+			self.log.Info(traceback.print_exc())
 			self.log.Info(e)
 
 	def list_convert_ord(self, obj_list):
@@ -104,7 +105,6 @@ class modbusServer():
 		while True:
 			try:
 				time.sleep(5)
-				self.log.Info(self.get_local_ip("eth0"))
 				master=modbus_tk.modbus_tcp.TcpMaster(host=self.get_local_ip("eth0"), port=502)
 				master.set_timeout(5.0)
 				for i in range(len(self.modbusServerInfoList)):
@@ -124,6 +124,7 @@ class modbusServer():
 				master._do_close()
 
 			except Exception as e:
+				self.log.Info(traceback.print_exc())
 				self.log.Info(e)
 
 	def start(self):

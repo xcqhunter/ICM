@@ -18,7 +18,7 @@ import re
 import platform
 import subprocess
 import datetime
-
+import traceback
 import sysInfoManager
 
 class collectSnmpInfo():
@@ -39,7 +39,6 @@ class collectSnmpInfo():
         #result = os.popen("snmpwalk -v " + version + " -c "+community+" "+agentIp+" "+oid, os.O_RDWR)
 	result = p.stdout.read()
 	result = result[result.find("=")+1:len(result)]
-	self.log.Info(result)
 	return result
 
     def colectInfo(self):
@@ -69,11 +68,10 @@ class collectSnmpInfo():
 			self.sysTopInfo.setInfoByKey("snmpInfoList", self.snmpInfoList)
 
 		except Exception, e: 
-		    self.log.Info("======collectSnmpInfo====Exception======exit=======")
-		finally:
-		    print "Exiting " + self.modeName
+			self.log.Info(traceback.print_exc())
+			self.log.Info(e)
 
-		time.sleep(5)
+		time.sleep(60)
  
     def start(self):
         if self.status == 0:		

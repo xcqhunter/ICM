@@ -1,6 +1,7 @@
 snmpInfoList = [
 {
-	"agentIp":"173.12.10.133",
+	#"agentIp":"173.12.10.133",
+	"agentIp":"192.168.101.246",
 	"version":"2c",    
 	"community":"public",
 	"oidList":[{"oid":"iso.3.6.1.2.1.1.9.1.3.1", "value":""},

@@ -19,7 +19,7 @@ import platform
 import subprocess
 import datetime
 import OpenOPC
-
+import traceback
 import sysInfoManager
 
 class collectOpcInfo():
@@ -31,12 +31,11 @@ class collectOpcInfo():
     
     def init(self):
 		
-		self.sysTopInfo=sysInfoManager.sysInfoManager
-		self.opcInfoList = self.sysTopInfo.getInfo("opcInfoList")
+	self.sysTopInfo=sysInfoManager.sysInfoManager
+	self.opcInfoList = self.sysTopInfo.getInfo("opcInfoList")
 	
-
     def colectInfo(self):
- 
+ 	self.log.Info(self.opcInfoList)
 	while True:
 		try:
 			for i in range(len(self.opcInfoList)):
@@ -62,11 +61,10 @@ class collectOpcInfo():
 			self.sysTopInfo.setInfoByKey("opcInfoList", self.opcInfoList)
 
 		except Exception, e: 
-		    self.log.Info("======collectOpcInfo====Exception======exit=======")
-		finally:
-		    print "Exiting " + self.modeName
+			self.log.Info(traceback.print_exc())
+			self.log.Info(e)
 
-		time.sleep(5)
+		time.sleep(60)
  
     def start(self):
         if self.status == 0:		

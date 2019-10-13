@@ -15,6 +15,7 @@ import Log
 import datetime
 
 import sysInfoManager
+import traceback
 
 class collectModbusInfo():
 
@@ -61,13 +62,13 @@ class collectModbusInfo():
 				
 
 			except socket.timeout:   # connection timeout exception
-				self.log.Info("modbusDev is not connected==========")
+				self.log.Info(e)
 				continue
 			except Exception as e:
+				self.log.Info(traceback.print_exc())
 				self.log.Info(e)
-			finally:
-				self.log.Info(self.sysTopInfo.getInfo("modbusDevInfoList"))
-				time.sleep(6)
+
+			time.sleep(60)
  
 	def start(self):
 		if self.status == 0:		
