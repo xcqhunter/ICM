@@ -1,0 +1,16 @@
+[Unit]
+Description= Info Collect Manager
+ConditionFileIsExecutable=/opt/ICM/start.sh
+After=NetworkManager.service
+
+
+[Service]
+Type=simple
+ExecStart=/opt/ICM/start.sh start 
+Restart=always
+RestartSec=2
+RemainAfterExit=yes
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target
