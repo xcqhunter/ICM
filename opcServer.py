@@ -67,7 +67,7 @@ class opcServer():
 
 	return ret
     def user_manager(self, isession, userName, password):
-        if userName in ("admin") and password in ("Aa123456"):
+        if userName == "admin" and password == "Aa123456":
             return True
         return False
     
@@ -84,7 +84,9 @@ class opcServer():
 	idx = server.register_namespace(uri)
         
         server.user_manager.set_user_manager(self.user_manager)
-	# get Objects node, this is where we should put our nodes
+        server.set_security_IDs("Username")
+	
+        # get Objects node, this is where we should put our nodes
 	objects = server.get_objects_node()
 
 	# populating our address space
