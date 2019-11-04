@@ -13,6 +13,8 @@ import collectLzbusIpInfo
 import modbusServer
 import NBIOT
 import collectOpcInfo
+import opcServer
+
 
 if __name__ == "__main__":
 	log = Log.Log
@@ -31,7 +33,7 @@ if __name__ == "__main__":
 	#采集snmp设备信息
 	snmpInfo = collectSnmpInfo.collectSnmpInfo
 	snmpInfo.init()
-	#snmpInfo.start()
+	snmpInfo.start()
 
 	#采集lzbusIp设备状态信息
 	lzbusIpInfo = collectLzbusIpInfo.collectLzbusIpInfo
@@ -51,7 +53,13 @@ if __name__ == "__main__":
 	#opc模块初始化
 	opcInfo = collectOpcInfo.collectOpcInfo
 	opcInfo.init()
-	opcInfo.start()
+	#opcInfo.start()
+
+
+	#opcServer模块初始化
+	opc_server = opcServer.opcServer
+	opc_server.init()
+	opc_server.start()
 
 	while True:
 		time.sleep(1)
